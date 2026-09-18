@@ -1,0 +1,7 @@
+A. Kumar
+Backend Software Engineer
+
+Technical skills include Python, FastAPI, AWS, Docker, PostgreSQL and Git.
+Professional background: more than three years developing RESTful APIs and backend systems.
+Education: Bachelor of Technology, Computer Science.
+Recent work included a containerized FastAPI API deployed to AWS.
