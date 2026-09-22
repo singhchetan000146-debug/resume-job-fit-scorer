@@ -1,0 +1,9 @@
+Required qualifications:
+- Python programming for backend applications.
+- Build REST APIs using FastAPI.
+- Write SQL queries and work with PostgreSQL databases.
+- Write automated unit tests with pytest.
+Responsibilities:
+- Collaborate with engineers through code reviews.
+Preferred qualifications:
+- Package applications with Docker.

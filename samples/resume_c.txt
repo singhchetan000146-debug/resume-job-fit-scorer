@@ -1,7 +1,5 @@
-Ravi Sharma
-Software Developer
-
-Skills: Python, Flask, Git, JavaScript.
-Experience: 1 year maintaining internal web tools.
-Education: B.Sc. in Mathematics.
-Project: Built a small Python dashboard for internal reporting.
+Synthetic candidate C - graphic designer
+Designed brochures and social media graphics in Adobe Illustrator.
+Created typography and visual identities for small businesses.
+Worked with clients to refine brand colours and presentation layouts.
+Prepared print-ready artwork and managed design deadlines.

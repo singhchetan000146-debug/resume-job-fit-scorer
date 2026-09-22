@@ -1,109 +1,215 @@
-# Resume → Job-Description Fit Scorer
+# Resume to Job-Description Fit Scorer
 
-A small applied-AI service that compares a resume (PDF/TXT) against a job description and returns an overall fit score plus per-criterion evidence and reasoning.
+**Chetan Singh | Task 1 | Python + FastAPI + local embeddings**
 
-## Why this design
+Upload a job description and a resume as PDF or TXT, or submit their text as JSON.
+The API extracts individual requirements, retrieves supporting resume passages,
+and returns a weighted score with evidence and reasoning for every criterion.
+This is an evidence-review aid: a score is not a hiring decision or a probability
+that a candidate is qualified.
 
-- **FastAPI + Pydantic**: typed request/response validation and a small HTTP surface.
-- **PyMuPDF**: local PDF text extraction. TXT uses UTF-8 decoding with replacement.
-- **Sentence Transformers**: one real embedding call is made for each criterion/resume comparison.
-- **Config-driven weights**: category weights live in `config.json`; the scoring code does not hardcode business weights.
-- **Transparent calibration**: raw cosine similarity is mapped from an empirically chosen range (`0.20–0.75`) to 0–100, then combined with a small evidence bonus. This reduces exaggerated score gaps between semantically similar resumes.
+## Start here
 
-## Setup
+Use Python 3.11 or 3.12. Recorded verification used Python 3.12 on Linux.
 
 ```bash
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-# source .venv/bin/activate
-
-pip install -r requirements.txt
-uvicorn app.main:app --reload
 ```
 
-The first scoring request downloads/caches `all-MiniLM-L6-v2` if it is not already available.
+Windows PowerShell:
 
-## Usage
+```powershell
+.venv\Scripts\Activate.ps1
+```
 
-Open `http://127.0.0.1:8000/docs` and use `POST /score`.
-
-The endpoint expects multipart form data:
-- `job_description`: text
-- `resume`: `.pdf` or `.txt`
-
-Example curl:
+macOS / Linux:
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/score" ^
-  -F "job_description=Required Python, FastAPI and 2 years API experience. Bachelor's degree preferred. Docker is a plus." ^
-  -F "resume=@samples/resume_a.txt"
+source .venv/bin/activate
 ```
 
-The response contains:
-- `overall_score` from 0–100
-- `parser_warning` if text extraction is suspicious
-- per criterion: score, weight, weighted contribution, reasoning, and evidence lines
+Install and start:
 
-## Error handling
+```bash
+python -m pip install -r requirements-tested.txt
+python -m uvicorn app.main:app --reload
+```
 
-- Unsupported file types → HTTP 400
-- Corrupt/unparseable PDFs → HTTP 400
-- Empty/image-only PDFs → accepted with a low-confidence parser warning rather than pretending the resume was read
-- Embedding model load/call failure → HTTP 503 with a useful error
-- Invalid/missing request fields → FastAPI/Pydantic validation error
+Open **http://127.0.0.1:8000/docs**. Expand `POST /assess/files`, click
+**Try it out**, select a job-description PDF/TXT and a resume PDF/TXT, then
+**Execute**. These are FastAPI's built-in API docs; no custom frontend is needed.
 
-## Calibration
+The first scoring call downloads `BAAI/bge-small-en-v1.5`. It needs internet and
+can take much longer than subsequent calls. Model weights are cached in
+`.model_cache/`. No API key is required. Once downloaded, embedding inference is
+local; document text is not sent to an LLM service. Metadata checks during model
+initialization can still require network, depending on the model library.
 
-Use the three calibration samples in `samples/` with the same JD:
+`requirements.txt` lists direct dependency ranges; `requirements-tested.txt`
+pins the exact tested environment, including development tools. On a different
+platform, install `requirements-dev.txt` if a pinned wheel is unavailable and rerun
+the tests. Model-download revisions are not pinned, so model updates may alter
+results. The saved metrics apply to the tested run, not all machines.
 
-| Sample | Relationship | Intended observation |
+## API usage
+
+| Endpoint | Input | Output |
 |---|---|---|
-| resume_a.txt | strong match | high score |
-| resume_b.txt | very similar to A, wording changed | close to A |
-| resume_c.txt | partial match | materially lower |
+| `GET /health` | none | service health and whether the model is loaded |
+| `POST /assess` | JSON: `job_description`, `resume` | structured assessment |
+| `POST /assess/files` | two multipart files with those same names | same assessment |
 
-The key requirement is **consistency**, not a magic universal threshold. When A/B are semantically similar, their overall scores should remain close. Record your actual run results in the explanation document before submission.
+PowerShell file example (`curl.exe` avoids the PowerShell alias):
 
-## Tests
-
-```bash
-pytest -q
+```powershell
+curl.exe -X POST http://127.0.0.1:8000/assess/files -F "job_description=@samples/job_description.txt" -F "resume=@samples/resume_a.txt"
 ```
 
-## What works vs. what doesn't
+macOS / Linux:
 
-### Works
-- PDF/TXT ingestion
-- Criteria extraction
-- Per-criterion embedding score
-- Configurable weights
-- Evidence lines and reasoning
-- Parser warning for low-text PDFs
-- LLM/embedding failure handling
-- Calibration sample workflow
+```bash
+curl -X POST http://127.0.0.1:8000/assess/files \
+  -F 'job_description=@samples/job_description.txt' \
+  -F 'resume=@samples/resume_a.txt'
+```
 
-### Not finished
-- OCR for scanned/image-only PDFs
-- LLM-based extraction of nuanced requirements (the baseline is intentionally transparent and heuristic)
-- A larger labeled evaluation set
-- Authentication, persistence, frontend, and deployment
+For JSON, paste this into `POST /assess` in `/docs`:
 
-These are intentionally excluded because the assignment says infrastructure is not the scoring focus.
+```json
+{
+  "job_description": "Requirements:\nBuild Python backend services.\nWrite PostgreSQL queries.",
+  "resume": "Developed Python backend services for inventory management.\nWrote PostgreSQL queries for monthly reporting."
+}
+```
 
-## Suggested Git history
+The response contains `overall_score`, the extracted `criteria`, source passages
+under `evidence`, per-criterion `score`, applied `weight`, normalized
+`contribution`, `reasoning`, and `status`. `needs_review` means ask for a concrete
+example; absence of strong text evidence does not establish absence of ability.
+Metadata includes the actual configuration, model and request duration.
+A complete real response is in [results/http_smoke.json](results/http_smoke.json).
 
-Do not submit as one commit. Make small, meaningful commits, for example:
+## How scoring works
 
-1. `chore: scaffold FastAPI service`
-2. `feat: add pdf and txt resume parsing`
-3. `feat: add configurable criteria extraction`
-4. `feat: add embedding-based scoring`
-5. `feat: add parser and embedding error handling`
-6. `test: add calibration samples and API tests`
-7. `docs: add explanation and usage guide`
+1. Parse and validate text. Reject empty, corrupt, encrypted or image-only PDFs.
+2. Extract JD bullets/sentences with explicit rules, preserving their wording.
+   Section headers distinguish required from preferred criteria.
+3. Split resume sentences into overlapping windows of at most 64 words, with
+   16-word overlap for long sentences. Deduplicate identical windows.
+4. Make one batched embedding operation for criteria and resume windows. The
+   model library internally processes batches of 16.
+5. For each criterion, find the greatest cosine similarity to a resume window.
+6. Map that similarity to a 0-100 evidence score and aggregate configured weights.
 
-## Important submission note
+```text
+criterion_score = 100 * clip((best_cosine - floor) / (ceiling - floor), 0, 1)
+weight = category_weight * importance_weight
+overall_score = sum(criterion_score * weight) / sum(weight)
+```
 
-The evaluator asks for a **public GitHub repository** and a **public Google Drive walkthrough**. This project creates the local code, but you must push it to your own GitHub account and record/upload your own 3–5 minute video.
+A simple possible-negation detector caps the score at 30 when the strongest
+passage includes phrases such as "no experience". This is a limited guard,
+not reliable contradiction detection. Raw cosine and source evidence remain visible.
+There is no keyword-count bonus; repeating a matching line cannot inflate its
+maximum similarity.
+
+## Configuration
+
+Edit `config.json` and restart the server. All weights, score thresholds,
+chunk sizes and file limits live there. `FIT_CONFIG` can select another file;
+`FIT_MODEL_CACHE` can select a cache directory. Pydantic rejects invalid weight
+keys, nonpositive weights, invalid score ranges and overlapping chunk settings.
+
+| Setting | Value | Why |
+|---|---:|---|
+| Similarity floor / ceiling | 0.40 / 1.00 | retain headroom after the initial scale saturated |
+| Skills / experience weights | 1.5 / 1.5 | give each of these criteria more influence |
+| Education / responsibility weights | 1.0 / 1.0 | explicit baseline weights, adjustable per job |
+| Required / preferred multiplier | 2.0 / 1.0 | emphasize stated requirements |
+| Chunk words / overlap | 64 / 16 | keep short evidence passages and preserve boundary context |
+| File / PDF / text limits | 3 MiB / 20 pages / 30,000 characters | bound this local prototype's input |
+
+Weights apply **per criterion**, not per category budget. A category with many
+bullets receives more total influence. Check the extracted list before using a
+score. Different jobs and configurations produce scores that are not directly
+comparable.
+
+## Actual calibration and tests
+
+```bash
+python -m pytest -q
+python scripts/calibrate.py
+python scripts/http_smoke.py
+```
+
+The recorded run passed **24 tests**. Two dependency deprecation warnings were
+observed; they did not fail the tests. Unit tests isolate API/validation/arithmetic
+with explicit stubs. The two scripts above use the **real embedding model**.
+`calibrate.py` exits nonzero if A/B differ by more than 10 points or either is less
+than 15 points above C. It does not substitute fake scores if the model fails.
+
+| Synthetic resume | Description | Actual score |
+|---|---|---:|
+| A | directly relevant backend experience | 87.81 |
+| B | similar experience, paraphrased | 78.89 |
+| C | graphic-design experience | 31.82 |
+
+A/B gap: **8.92 points**. Weaker-resume margin: **47.07 points**. Repeat A score
+change: **0.00**. One warm repeat took **112.49 ms** on the test machine.
+This is a tiny, in-sample consistency check, not general accuracy evidence.
+See [raw results](results/calibration.json) and
+[before/after rationale](docs/calibration_notes.md). The first scale produced
+100.00 / 99.82 / 52.90; the retained baseline shows why the range changed.
+The separate HTTP smoke input was not used to select the range.
+
+## Errors and limitations
+
+| Condition | Behavior |
+|---|---|
+| Missing fields, short text, invalid JSON types | 422 validation error |
+| Empty / corrupt / encrypted / image-only PDF or invalid UTF-8 | 422 with corrective message |
+| Unsupported extension | 415 |
+| File, extracted text or page limit exceeded | 413 |
+| Model download/inference failure or nonfinite vectors | 503; no invented assessment |
+| Invalid server configuration | startup fails clearly |
+
+**Works:** both inputs as TXT/PDF, JSON input, criteria extraction, real local
+embeddings, normalized aggregation, configurable weights, evidence retrieval,
+calibration script, parser failure handling and model failure handling.
+
+**Not finished:** OCR, reliable tenure/date arithmetic, nuanced negation, atomic
+splitting of multi-skill bullets, multilingual evaluation, recruiter-labeled
+validation and model revision pinning. Heuristics work best with explicit English
+requirements, one per line. Complex PDF layouts can reorder text. A very long JD
+bullet can exceed the embedding tokenizer's limit. Model calls are serialized in
+this prototype and do not have a hard inference deadline. Input limits do not
+replace production request-body/rate limits. Do not expose this unauthenticated
+prototype to the public internet.
+
+There is no deployment, authentication, custom frontend or database: none is
+needed to demonstrate the assignment. Uploaded files are not saved by the app;
+only explicitly run evaluation scripts write local synthetic results.
+
+## Submission files
+
+- [One-page explanation PDF](docs/Chetan_Singh_Explanation.pdf)
+- [Explanation source](docs/explanation.md)
+- [3-5 minute walkthrough guide](docs/walkthrough_script.md)
+- [Actual development prompt record](docs/development_prompts.md)
+- [Submission and GitHub instructions](docs/SUBMISSION.md)
+
+Built with AI assistance. Chetan should review the implementation and explain its
+trade-offs in his own words. The walkthrough video and hours-spent statement must
+come from the actual submission work; neither has been fabricated.
+
+This revision replaces the earlier MiniLM/whole-resume scoring approach with
+FastEmbed and passage evidence, removes a line-count bonus, normalizes the
+weights present in each JD, and accepts a file for the JD too. The API changes
+from `/score` to `/assess` and `/assess/files`; the new configuration is not
+compatible with the old keys. Earlier implementation remains in Git history.
+
+## Primary references
+
+- [FastAPI file uploads](https://fastapi.tiangolo.com/tutorial/request-files/)
+- [FastEmbed quickstart](https://qdrant.tech/documentation/fastembed/fastembed-quickstart/)
+- [pypdf text extraction and OCR limitations](https://pypdf.readthedocs.io/en/6.0.0/user/extract-text.html)

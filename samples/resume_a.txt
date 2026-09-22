@@ -1,7 +1,7 @@
-Alex Kumar
-Python Backend Engineer
-
-Skills: Python, FastAPI, Docker, AWS, PostgreSQL, Git
-Experience: 3 years building REST APIs and backend services.
-Education: B.Tech in Computer Science.
-Projects: Built a FastAPI service deployed with Docker on AWS.
+Synthetic candidate A - backend developer
+Developed backend applications using Python.
+Built REST APIs using FastAPI for an inventory service.
+Wrote SQL queries and maintained PostgreSQL databases.
+Wrote automated unit tests with pytest for API endpoints.
+Collaborated with engineers through code reviews.
+Packaged applications with Docker for local development.

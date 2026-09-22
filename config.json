@@ -1,14 +1,26 @@
 {
+  "model_name": "BAAI/bge-small-en-v1.5",
+  "batch_size": 16,
+  "chunk_words": 64,
+  "chunk_overlap": 16,
+  "similarity_floor": 0.4,
+  "similarity_ceiling": 1.0,
+  "negation_score_cap": 30,
+  "evidence_limit": 3,
   "weights": {
-    "must_have_skills": 0.35,
-    "experience": 0.2,
-    "education": 0.15,
-    "tools": 0.15,
-    "domain_knowledge": 0.1,
-    "nice_to_have": 0.05
+    "experience": 1.5,
+    "education": 1.0,
+    "skills": 1.5,
+    "responsibility": 1.0
   },
-  "embedding_model": "all-MiniLM-L6-v2",
-  "similarity_floor": 0.2,
-  "similarity_ceiling": 0.75,
-  "parser_min_chars": 40
+  "importance_weights": {
+    "required": 2.0,
+    "preferred": 1.0
+  },
+  "max_criteria": 30,
+  "review_threshold": 60,
+  "strong_evidence_threshold": 80,
+  "max_file_bytes": 3145728,
+  "max_pdf_pages": 20,
+  "max_characters": 30000
 }

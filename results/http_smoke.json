@@ -1,0 +1,138 @@
+{
+  "request": {
+    "job_description": "Requirements:\nBuild Python services for order processing.\nWrite SQL queries for PostgreSQL.\nPreferred qualifications:\nUse Docker for application packaging.",
+    "resume": "Created Python services to process shop orders.\nMaintained PostgreSQL tables and wrote SQL reporting queries.\nPackaged the service in Docker containers."
+  },
+  "http_status": 200,
+  "response": {
+    "overall_score": 80.58,
+    "criteria": [
+      {
+        "text": "Build Python services for order processing.",
+        "category": "skills",
+        "importance": "required",
+        "score": 88.12,
+        "weight": 3.0,
+        "contribution": 35.2478,
+        "evidence": [
+          {
+            "chunk_id": 0,
+            "text": "Created Python services to process shop orders.",
+            "similarity": 0.9287
+          },
+          {
+            "chunk_id": 2,
+            "text": "Packaged the service in Docker containers.",
+            "similarity": 0.6957
+          },
+          {
+            "chunk_id": 1,
+            "text": "Maintained PostgreSQL tables and wrote SQL reporting queries.",
+            "similarity": 0.6347
+          }
+        ],
+        "reasoning": "Best evidence chunk 0 has cosine similarity 0.929; configured linear mapping gives 88.1/100.",
+        "status": "strong_evidence"
+      },
+      {
+        "text": "Write SQL queries for PostgreSQL.",
+        "category": "skills",
+        "importance": "required",
+        "score": 74.92,
+        "weight": 3.0,
+        "contribution": 29.9687,
+        "evidence": [
+          {
+            "chunk_id": 1,
+            "text": "Maintained PostgreSQL tables and wrote SQL reporting queries.",
+            "similarity": 0.8495
+          },
+          {
+            "chunk_id": 0,
+            "text": "Created Python services to process shop orders.",
+            "similarity": 0.6473
+          },
+          {
+            "chunk_id": 2,
+            "text": "Packaged the service in Docker containers.",
+            "similarity": 0.5291
+          }
+        ],
+        "reasoning": "Best evidence chunk 1 has cosine similarity 0.850; configured linear mapping gives 74.9/100.",
+        "status": "partial_evidence"
+      },
+      {
+        "text": "Use Docker for application packaging.",
+        "category": "skills",
+        "importance": "preferred",
+        "score": 76.83,
+        "weight": 1.5,
+        "contribution": 15.3662,
+        "evidence": [
+          {
+            "chunk_id": 2,
+            "text": "Packaged the service in Docker containers.",
+            "similarity": 0.861
+          },
+          {
+            "chunk_id": 0,
+            "text": "Created Python services to process shop orders.",
+            "similarity": 0.6229
+          },
+          {
+            "chunk_id": 1,
+            "text": "Maintained PostgreSQL tables and wrote SQL reporting queries.",
+            "similarity": 0.5219
+          }
+        ],
+        "reasoning": "Best evidence chunk 2 has cosine similarity 0.861; configured linear mapping gives 76.8/100.",
+        "status": "partial_evidence"
+      }
+    ],
+    "human_review_required": true,
+    "warnings": [
+      "Scores measure text evidence, not verified competence or a hiring recommendation.",
+      "Criteria extraction is rule-based. Check the extracted list and category weights.",
+      "Numeric tenure, negation and multi-skill requirements require human verification."
+    ],
+    "metadata": {
+      "model": "BAAI/bge-small-en-v1.5",
+      "elapsed_ms": 756.54,
+      "resume_chunks": 3,
+      "config": {
+        "model_name": "BAAI/bge-small-en-v1.5",
+        "batch_size": 16,
+        "chunk_words": 64,
+        "chunk_overlap": 16,
+        "similarity_floor": 0.4,
+        "similarity_ceiling": 1.0,
+        "negation_score_cap": 30.0,
+        "evidence_limit": 3,
+        "weights": {
+          "experience": 1.5,
+          "education": 1.0,
+          "skills": 1.5,
+          "responsibility": 1.0
+        },
+        "importance_weights": {
+          "required": 2.0,
+          "preferred": 1.0
+        },
+        "max_criteria": 30,
+        "review_threshold": 60.0,
+        "strong_evidence_threshold": 80.0,
+        "max_file_bytes": 3145728,
+        "max_pdf_pages": 20,
+        "max_characters": 30000
+      },
+      "score_meaning": "evidence alignment, not probability"
+    }
+  },
+  "unreadable_pdf": {
+    "status": 422,
+    "body": {
+      "error": "unreadable_or_invalid_input",
+      "detail": "Could not read this file. Try a text-based PDF or UTF-8 TXT."
+    }
+  }
+}

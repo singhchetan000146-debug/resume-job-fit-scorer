@@ -1,0 +1,629 @@
+{
+  "sample_type": "three synthetic resumes; small sanity check, not hiring validation",
+  "model": "BAAI/bge-small-en-v1.5",
+  "similar_resume_gap": 8.92,
+  "weaker_resume_margin": 47.07,
+  "repeat_score_delta": 0.0,
+  "warm_repeat_ms": 112.49,
+  "acceptance": {
+    "similar_gap_at_most_10": true,
+    "weaker_margin_at_least_15": true
+  },
+  "reports": {
+    "a": {
+      "overall_score": 87.81,
+      "criteria": [
+        {
+          "text": "Python programming for backend applications.",
+          "category": "skills",
+          "importance": "required",
+          "score": 94.2,
+          "weight": 3.0,
+          "contribution": 19.4906,
+          "evidence": [
+            {
+              "chunk_id": 1,
+              "text": "Developed backend applications using Python.",
+              "similarity": 0.9652
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate A - backend developer",
+              "similarity": 0.7703
+            },
+            {
+              "chunk_id": 6,
+              "text": "Packaged applications with Docker for local development.",
+              "similarity": 0.7269
+            }
+          ],
+          "reasoning": "Best evidence chunk 1 has cosine similarity 0.965; configured linear mapping gives 94.2/100.",
+          "status": "strong_evidence"
+        },
+        {
+          "text": "Build REST APIs using FastAPI.",
+          "category": "skills",
+          "importance": "required",
+          "score": 81.62,
+          "weight": 3.0,
+          "contribution": 16.8876,
+          "evidence": [
+            {
+              "chunk_id": 2,
+              "text": "Built REST APIs using FastAPI for an inventory service.",
+              "similarity": 0.8897
+            },
+            {
+              "chunk_id": 1,
+              "text": "Developed backend applications using Python.",
+              "similarity": 0.7062
+            },
+            {
+              "chunk_id": 4,
+              "text": "Wrote automated unit tests with pytest for API endpoints.",
+              "similarity": 0.6912
+            }
+          ],
+          "reasoning": "Best evidence chunk 2 has cosine similarity 0.890; configured linear mapping gives 81.6/100.",
+          "status": "strong_evidence"
+        },
+        {
+          "text": "Write SQL queries and work with PostgreSQL databases.",
+          "category": "skills",
+          "importance": "required",
+          "score": 86.42,
+          "weight": 3.0,
+          "contribution": 17.8803,
+          "evidence": [
+            {
+              "chunk_id": 3,
+              "text": "Wrote SQL queries and maintained PostgreSQL databases.",
+              "similarity": 0.9185
+            },
+            {
+              "chunk_id": 1,
+              "text": "Developed backend applications using Python.",
+              "similarity": 0.6629
+            },
+            {
+              "chunk_id": 4,
+              "text": "Wrote automated unit tests with pytest for API endpoints.",
+              "similarity": 0.6216
+            }
+          ],
+          "reasoning": "Best evidence chunk 3 has cosine similarity 0.919; configured linear mapping gives 86.4/100.",
+          "status": "strong_evidence"
+        },
+        {
+          "text": "Write automated unit tests with pytest.",
+          "category": "responsibility",
+          "importance": "required",
+          "score": 90.16,
+          "weight": 2.0,
+          "contribution": 12.436,
+          "evidence": [
+            {
+              "chunk_id": 4,
+              "text": "Wrote automated unit tests with pytest for API endpoints.",
+              "similarity": 0.941
+            },
+            {
+              "chunk_id": 1,
+              "text": "Developed backend applications using Python.",
+              "similarity": 0.6596
+            },
+            {
+              "chunk_id": 3,
+              "text": "Wrote SQL queries and maintained PostgreSQL databases.",
+              "similarity": 0.6146
+            }
+          ],
+          "reasoning": "Best evidence chunk 4 has cosine similarity 0.941; configured linear mapping gives 90.2/100.",
+          "status": "strong_evidence"
+        },
+        {
+          "text": "Collaborate with engineers through code reviews.",
+          "category": "responsibility",
+          "importance": "required",
+          "score": 89.95,
+          "weight": 2.0,
+          "contribution": 12.4073,
+          "evidence": [
+            {
+              "chunk_id": 5,
+              "text": "Collaborated with engineers through code reviews.",
+              "similarity": 0.9397
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate A - backend developer",
+              "similarity": 0.6943
+            },
+            {
+              "chunk_id": 1,
+              "text": "Developed backend applications using Python.",
+              "similarity": 0.6879
+            }
+          ],
+          "reasoning": "Best evidence chunk 5 has cosine similarity 0.940; configured linear mapping gives 90.0/100.",
+          "status": "strong_evidence"
+        },
+        {
+          "text": "Package applications with Docker.",
+          "category": "skills",
+          "importance": "preferred",
+          "score": 84.14,
+          "weight": 1.5,
+          "contribution": 8.7043,
+          "evidence": [
+            {
+              "chunk_id": 6,
+              "text": "Packaged applications with Docker for local development.",
+              "similarity": 0.9048
+            },
+            {
+              "chunk_id": 1,
+              "text": "Developed backend applications using Python.",
+              "similarity": 0.7284
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate A - backend developer",
+              "similarity": 0.6395
+            }
+          ],
+          "reasoning": "Best evidence chunk 6 has cosine similarity 0.905; configured linear mapping gives 84.1/100.",
+          "status": "strong_evidence"
+        }
+      ],
+      "human_review_required": true,
+      "warnings": [
+        "Scores measure text evidence, not verified competence or a hiring recommendation.",
+        "Criteria extraction is rule-based. Check the extracted list and category weights.",
+        "Numeric tenure, negation and multi-skill requirements require human verification."
+      ],
+      "metadata": {
+        "model": "BAAI/bge-small-en-v1.5",
+        "elapsed_ms": 642.41,
+        "resume_chunks": 7,
+        "config": {
+          "model_name": "BAAI/bge-small-en-v1.5",
+          "batch_size": 16,
+          "chunk_words": 64,
+          "chunk_overlap": 16,
+          "similarity_floor": 0.4,
+          "similarity_ceiling": 1.0,
+          "negation_score_cap": 30.0,
+          "evidence_limit": 3,
+          "weights": {
+            "experience": 1.5,
+            "education": 1.0,
+            "skills": 1.5,
+            "responsibility": 1.0
+          },
+          "importance_weights": {
+            "required": 2.0,
+            "preferred": 1.0
+          },
+          "max_criteria": 30,
+          "review_threshold": 60.0,
+          "strong_evidence_threshold": 80.0,
+          "max_file_bytes": 3145728,
+          "max_pdf_pages": 20,
+          "max_characters": 30000
+        },
+        "score_meaning": "evidence alignment, not probability"
+      }
+    },
+    "b": {
+      "overall_score": 78.89,
+      "criteria": [
+        {
+          "text": "Python programming for backend applications.",
+          "category": "skills",
+          "importance": "required",
+          "score": 84.41,
+          "weight": 3.0,
+          "contribution": 17.464,
+          "evidence": [
+            {
+              "chunk_id": 1,
+              "text": "Implemented Python backend services.",
+              "similarity": 0.9065
+            },
+            {
+              "chunk_id": 6,
+              "text": "Containerized applications using Docker for development.",
+              "similarity": 0.7207
+            },
+            {
+              "chunk_id": 4,
+              "text": "Tested API endpoints with automated pytest unit tests.",
+              "similarity": 0.6955
+            }
+          ],
+          "reasoning": "Best evidence chunk 1 has cosine similarity 0.906; configured linear mapping gives 84.4/100.",
+          "status": "strong_evidence"
+        },
+        {
+          "text": "Build REST APIs using FastAPI.",
+          "category": "skills",
+          "importance": "required",
+          "score": 74.49,
+          "weight": 3.0,
+          "contribution": 15.4121,
+          "evidence": [
+            {
+              "chunk_id": 2,
+              "text": "Created REST endpoints with FastAPI for inventory management.",
+              "similarity": 0.847
+            },
+            {
+              "chunk_id": 4,
+              "text": "Tested API endpoints with automated pytest unit tests.",
+              "similarity": 0.7095
+            },
+            {
+              "chunk_id": 1,
+              "text": "Implemented Python backend services.",
+              "similarity": 0.685
+            }
+          ],
+          "reasoning": "Best evidence chunk 2 has cosine similarity 0.847; configured linear mapping gives 74.5/100.",
+          "status": "partial_evidence"
+        },
+        {
+          "text": "Write SQL queries and work with PostgreSQL databases.",
+          "category": "skills",
+          "importance": "required",
+          "score": 75.73,
+          "weight": 3.0,
+          "contribution": 15.6689,
+          "evidence": [
+            {
+              "chunk_id": 3,
+              "text": "Used PostgreSQL and SQL queries to store and retrieve application data.",
+              "similarity": 0.8544
+            },
+            {
+              "chunk_id": 1,
+              "text": "Implemented Python backend services.",
+              "similarity": 0.6421
+            },
+            {
+              "chunk_id": 2,
+              "text": "Created REST endpoints with FastAPI for inventory management.",
+              "similarity": 0.6244
+            }
+          ],
+          "reasoning": "Best evidence chunk 3 has cosine similarity 0.854; configured linear mapping gives 75.7/100.",
+          "status": "partial_evidence"
+        },
+        {
+          "text": "Write automated unit tests with pytest.",
+          "category": "responsibility",
+          "importance": "required",
+          "score": 79.32,
+          "weight": 2.0,
+          "contribution": 10.9404,
+          "evidence": [
+            {
+              "chunk_id": 4,
+              "text": "Tested API endpoints with automated pytest unit tests.",
+              "similarity": 0.8759
+            },
+            {
+              "chunk_id": 1,
+              "text": "Implemented Python backend services.",
+              "similarity": 0.6507
+            },
+            {
+              "chunk_id": 5,
+              "text": "Reviewed code with fellow engineers and incorporated their feedback.",
+              "similarity": 0.5987
+            }
+          ],
+          "reasoning": "Best evidence chunk 4 has cosine similarity 0.876; configured linear mapping gives 79.3/100.",
+          "status": "partial_evidence"
+        },
+        {
+          "text": "Collaborate with engineers through code reviews.",
+          "category": "responsibility",
+          "importance": "required",
+          "score": 84.88,
+          "weight": 2.0,
+          "contribution": 11.7069,
+          "evidence": [
+            {
+              "chunk_id": 5,
+              "text": "Reviewed code with fellow engineers and incorporated their feedback.",
+              "similarity": 0.9093
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate B - software engineer",
+              "similarity": 0.692
+            },
+            {
+              "chunk_id": 4,
+              "text": "Tested API endpoints with automated pytest unit tests.",
+              "similarity": 0.6631
+            }
+          ],
+          "reasoning": "Best evidence chunk 5 has cosine similarity 0.909; configured linear mapping gives 84.9/100.",
+          "status": "strong_evidence"
+        },
+        {
+          "text": "Package applications with Docker.",
+          "category": "skills",
+          "importance": "preferred",
+          "score": 74.39,
+          "weight": 1.5,
+          "contribution": 7.6955,
+          "evidence": [
+            {
+              "chunk_id": 6,
+              "text": "Containerized applications using Docker for development.",
+              "similarity": 0.8463
+            },
+            {
+              "chunk_id": 1,
+              "text": "Implemented Python backend services.",
+              "similarity": 0.6976
+            },
+            {
+              "chunk_id": 2,
+              "text": "Created REST endpoints with FastAPI for inventory management.",
+              "similarity": 0.6261
+            }
+          ],
+          "reasoning": "Best evidence chunk 6 has cosine similarity 0.846; configured linear mapping gives 74.4/100.",
+          "status": "partial_evidence"
+        }
+      ],
+      "human_review_required": true,
+      "warnings": [
+        "Scores measure text evidence, not verified competence or a hiring recommendation.",
+        "Criteria extraction is rule-based. Check the extracted list and category weights.",
+        "Numeric tenure, negation and multi-skill requirements require human verification."
+      ],
+      "metadata": {
+        "model": "BAAI/bge-small-en-v1.5",
+        "elapsed_ms": 96.18,
+        "resume_chunks": 7,
+        "config": {
+          "model_name": "BAAI/bge-small-en-v1.5",
+          "batch_size": 16,
+          "chunk_words": 64,
+          "chunk_overlap": 16,
+          "similarity_floor": 0.4,
+          "similarity_ceiling": 1.0,
+          "negation_score_cap": 30.0,
+          "evidence_limit": 3,
+          "weights": {
+            "experience": 1.5,
+            "education": 1.0,
+            "skills": 1.5,
+            "responsibility": 1.0
+          },
+          "importance_weights": {
+            "required": 2.0,
+            "preferred": 1.0
+          },
+          "max_criteria": 30,
+          "review_threshold": 60.0,
+          "strong_evidence_threshold": 80.0,
+          "max_file_bytes": 3145728,
+          "max_pdf_pages": 20,
+          "max_characters": 30000
+        },
+        "score_meaning": "evidence alignment, not probability"
+      }
+    },
+    "c": {
+      "overall_score": 31.82,
+      "criteria": [
+        {
+          "text": "Python programming for backend applications.",
+          "category": "skills",
+          "importance": "required",
+          "score": 36.91,
+          "weight": 3.0,
+          "contribution": 7.6357,
+          "evidence": [
+            {
+              "chunk_id": 4,
+              "text": "Prepared print-ready artwork and managed design deadlines.",
+              "similarity": 0.6214
+            },
+            {
+              "chunk_id": 1,
+              "text": "Designed brochures and social media graphics in Adobe Illustrator.",
+              "similarity": 0.6098
+            },
+            {
+              "chunk_id": 2,
+              "text": "Created typography and visual identities for small businesses.",
+              "similarity": 0.5915
+            }
+          ],
+          "reasoning": "Best evidence chunk 4 has cosine similarity 0.621; configured linear mapping gives 36.9/100. Ask for a concrete example demonstrating this requirement.",
+          "status": "needs_review"
+        },
+        {
+          "text": "Build REST APIs using FastAPI.",
+          "category": "skills",
+          "importance": "required",
+          "score": 25.87,
+          "weight": 3.0,
+          "contribution": 5.353,
+          "evidence": [
+            {
+              "chunk_id": 4,
+              "text": "Prepared print-ready artwork and managed design deadlines.",
+              "similarity": 0.5552
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate C - graphic designer",
+              "similarity": 0.5485
+            },
+            {
+              "chunk_id": 1,
+              "text": "Designed brochures and social media graphics in Adobe Illustrator.",
+              "similarity": 0.5251
+            }
+          ],
+          "reasoning": "Best evidence chunk 4 has cosine similarity 0.555; configured linear mapping gives 25.9/100. Ask for a concrete example demonstrating this requirement.",
+          "status": "needs_review"
+        },
+        {
+          "text": "Write SQL queries and work with PostgreSQL databases.",
+          "category": "skills",
+          "importance": "required",
+          "score": 29.97,
+          "weight": 3.0,
+          "contribution": 6.2004,
+          "evidence": [
+            {
+              "chunk_id": 4,
+              "text": "Prepared print-ready artwork and managed design deadlines.",
+              "similarity": 0.5798
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate C - graphic designer",
+              "similarity": 0.5536
+            },
+            {
+              "chunk_id": 1,
+              "text": "Designed brochures and social media graphics in Adobe Illustrator.",
+              "similarity": 0.5398
+            }
+          ],
+          "reasoning": "Best evidence chunk 4 has cosine similarity 0.580; configured linear mapping gives 30.0/100. Ask for a concrete example demonstrating this requirement.",
+          "status": "needs_review"
+        },
+        {
+          "text": "Write automated unit tests with pytest.",
+          "category": "responsibility",
+          "importance": "required",
+          "score": 25.38,
+          "weight": 2.0,
+          "contribution": 3.5002,
+          "evidence": [
+            {
+              "chunk_id": 4,
+              "text": "Prepared print-ready artwork and managed design deadlines.",
+              "similarity": 0.5523
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate C - graphic designer",
+              "similarity": 0.5387
+            },
+            {
+              "chunk_id": 2,
+              "text": "Created typography and visual identities for small businesses.",
+              "similarity": 0.4969
+            }
+          ],
+          "reasoning": "Best evidence chunk 4 has cosine similarity 0.552; configured linear mapping gives 25.4/100. Ask for a concrete example demonstrating this requirement.",
+          "status": "needs_review"
+        },
+        {
+          "text": "Collaborate with engineers through code reviews.",
+          "category": "responsibility",
+          "importance": "required",
+          "score": 42.65,
+          "weight": 2.0,
+          "contribution": 5.8821,
+          "evidence": [
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate C - graphic designer",
+              "similarity": 0.6559
+            },
+            {
+              "chunk_id": 4,
+              "text": "Prepared print-ready artwork and managed design deadlines.",
+              "similarity": 0.6459
+            },
+            {
+              "chunk_id": 1,
+              "text": "Designed brochures and social media graphics in Adobe Illustrator.",
+              "similarity": 0.6434
+            }
+          ],
+          "reasoning": "Best evidence chunk 0 has cosine similarity 0.656; configured linear mapping gives 42.6/100. Ask for a concrete example demonstrating this requirement.",
+          "status": "needs_review"
+        },
+        {
+          "text": "Package applications with Docker.",
+          "category": "skills",
+          "importance": "preferred",
+          "score": 31.41,
+          "weight": 1.5,
+          "contribution": 3.2498,
+          "evidence": [
+            {
+              "chunk_id": 4,
+              "text": "Prepared print-ready artwork and managed design deadlines.",
+              "similarity": 0.5885
+            },
+            {
+              "chunk_id": 1,
+              "text": "Designed brochures and social media graphics in Adobe Illustrator.",
+              "similarity": 0.576
+            },
+            {
+              "chunk_id": 0,
+              "text": "Synthetic candidate C - graphic designer",
+              "similarity": 0.5557
+            }
+          ],
+          "reasoning": "Best evidence chunk 4 has cosine similarity 0.588; configured linear mapping gives 31.4/100. Ask for a concrete example demonstrating this requirement.",
+          "status": "needs_review"
+        }
+      ],
+      "human_review_required": true,
+      "warnings": [
+        "Scores measure text evidence, not verified competence or a hiring recommendation.",
+        "Criteria extraction is rule-based. Check the extracted list and category weights.",
+        "Numeric tenure, negation and multi-skill requirements require human verification."
+      ],
+      "metadata": {
+        "model": "BAAI/bge-small-en-v1.5",
+        "elapsed_ms": 73.43,
+        "resume_chunks": 5,
+        "config": {
+          "model_name": "BAAI/bge-small-en-v1.5",
+          "batch_size": 16,
+          "chunk_words": 64,
+          "chunk_overlap": 16,
+          "similarity_floor": 0.4,
+          "similarity_ceiling": 1.0,
+          "negation_score_cap": 30.0,
+          "evidence_limit": 3,
+          "weights": {
+            "experience": 1.5,
+            "education": 1.0,
+            "skills": 1.5,
+            "responsibility": 1.0
+          },
+          "importance_weights": {
+            "required": 2.0,
+            "preferred": 1.0
+          },
+          "max_criteria": 30,
+          "review_threshold": 60.0,
+          "strong_evidence_threshold": 80.0,
+          "max_file_bytes": 3145728,
+          "max_pdf_pages": 20,
+          "max_characters": 30000
+        },
+        "score_meaning": "evidence alignment, not probability"
+      }
+    }
+  }
+}

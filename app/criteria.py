@@ -1,74 +1,58 @@
 import re
-from .models import Criterion
-from .config import settings
+from app.schemas import Criterion
+from app.parsing import InputError
 
-CATEGORY_MAP = {
-    "must_have_skills": ["required", "must", "should have", "skills", "qualification"],
-    "experience": ["experience", "years", "worked", "background"],
-    "education": ["degree", "bachelor", "master", "education", "qualification"],
-    "tools": ["python", "sql", "fastapi", "flask", "aws", "docker", "git", "pandas", "excel",
-              "kubernetes", "react", "java", "c++", "embedded", "stm32", "esp32"],
-    "domain_knowledge": ["domain", "machine learning", "ai", "electronics", "vlsi", "pcb",
-                         "semiconductor", "data science"],
-    "nice_to_have": ["preferred", "plus", "nice to have", "bonus"]
-}
 
-def _category(text: str) -> str:
-    low = text.lower()
-    if any(x in low for x in CATEGORY_MAP["nice_to_have"]):
-        return "nice_to_have"
-    if any(x in low for x in CATEGORY_MAP["education"]):
-        return "education"
-    if any(x in low for x in CATEGORY_MAP["experience"]):
-        return "experience"
-    if any(x in low for x in CATEGORY_MAP["tools"]):
-        return "tools"
-    if any(x in low for x in CATEGORY_MAP["domain_knowledge"]):
-        return "domain_knowledge"
-    return "must_have_skills"
-
-def extract_criteria(jd: str) -> list[Criterion]:
-    # Transparent baseline: preserve bullet/sentence requirements instead of hiding extraction
-    # behind a framework. Repeated/near-empty lines are removed.
-    raw = re.split(r"\n|(?<=[.!?])\s+", jd)
-    candidates = []
-    for line in raw:
-        s = re.sub(r"^[\s•\-*\d.)]+", "", line).strip()
-        if len(s) < 12:
+def extract_criteria(text, config):
+    """Transparent rule-based extraction; source wording remains available for review."""
+    result, seen = [], set()
+    importance = 'required'
+    skip_section = False
+    for raw in re.split(r'\n|(?<=[.!?])\s+(?=[A-Z])', text):
+        line = re.sub(r'^\s*(?:[-*•]+|\d+[.)])\s*', '', raw).strip()
+        if not line:
             continue
-        low = s.lower()
-        signal = any(k in low for vals in CATEGORY_MAP.values() for k in vals)
-        if signal or len(candidates) < 6:
-            candidates.append(s)
-
-    # Deduplicate while keeping order.
-    unique = []
-    seen = set()
-    for c in candidates:
-        key = re.sub(r"\W+", " ", c.lower()).strip()
-        if key not in seen:
-            unique.append(c)
-            seen.add(key)
-
-    # Limit to actionable criteria. In a production system, an LLM extraction step could replace
-    # this transparent baseline while keeping the same Criterion schema.
-    unique = unique[:12]
-    if not unique:
-        unique = ["General fit to the supplied job description"]
-
-    # Split configured weight among criteria by category. This makes weights externally configurable.
-    counts = {}
-    for u in unique:
-        counts[_category(u)] = counts.get(_category(u), 0) + 1
-
-    result = []
-    for i, req in enumerate(unique, 1):
-        cat = _category(req)
-        weight = settings.weights.get(cat, 0.0) / counts[cat]
-        result.append(Criterion(
-            name=f"Criterion {i}",
-            category=cat,
-            requirement=req,
-            weight=weight
-        ))
+        low = line.lower().rstrip(':')
+        if low in {'preferred', 'preferred qualifications', 'nice to have', 'desirable'}:
+            importance, skip_section = 'preferred', False
+            continue
+        if low in {'requirements', 'required', 'required qualifications', 'qualifications', 'responsibilities', 'must have', 'skills'}:
+            importance, skip_section = 'required', False
+            continue
+        if low in {'benefits', 'about us', 'about the company', 'what we offer'}:
+            skip_section = True
+            continue
+        if skip_section or len(line) < 12 or low in seen:
+            continue
+        if re.match(r'^(job title|location|salary|we are|join our|job description)\b', low):
+            continue
+        # Check experience before tools: "3 years of Python" is experience.
+        if re.search(r'\b(years?|experience)\b', low):
+            category = 'experience'
+        elif re.search(r'\b(degree|bachelor|master|diploma|education|phd)\b', low):
+            category = 'education'
+        elif re.search(r'\b(python|sql|java|fastapi|flask|git|docker|aws|excel|skills?|proficien|knowledge|familiar)', low):
+            category = 'skills'
+        else:
+            category = 'responsibility'
+        level = 'preferred' if re.search(r'\b(preferred|optional|nice to have)\b', low) else importance
+        result.append(Criterion(text=line, category=category, importance=level))
+        seen.add(low)
+    if not result:
+        raise InputError('No criteria extracted. Provide explicit requirements, ideally one per line.')
+    if len(result) > config.max_criteria:
+        raise InputError(f'More than {config.max_criteria} criteria found. Shorten the job description.')
     return result
+
+
+def chunk_resume(text, config):
+    chunks = []
+    for line in re.split(r'\n|(?<=[.!?])\s+', text):
+        words = line.split()
+        for start in range(0, len(words), config.chunk_words - config.chunk_overlap):
+            chunk = ' '.join(words[start:start + config.chunk_words])
+            if chunk and chunk not in chunks:
+                chunks.append(chunk)
+            if start + config.chunk_words >= len(words):
+                break
+    return chunks

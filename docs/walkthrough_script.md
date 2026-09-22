@@ -1,19 +1,53 @@
-# 3–5 Minute Walkthrough Script
+# Chetan's walkthrough guide: aim for 4 minutes
 
-**0:00–0:30 — What it does**  
-“I'm showing a FastAPI resume-to-job-description fit scorer. It accepts a JD and a PDF/TXT resume and returns an overall score, per-criterion scores, reasoning, evidence, and parser warnings.”
+Read the code and adapt this outline to your own words. Record your own voice;
+do not claim you ran a test or built something without understanding what happened.
+The measurements documented here were obtained during this AI-assisted revision.
 
-**0:30–1:15 — Run it**  
-Start with `uvicorn app.main:app --reload`, open `/docs`, paste a *new* JD you have not used in the repository, upload a new TXT/PDF resume, and execute `/score`. Point out the overall score and criterion breakdown.
+Before recording: install dependencies, run the calibration once to cache the
+model, start `python -m uvicorn app.main:app --reload`, and open `/docs`.
+Create a NEW job description and resume not present in samples/ or results/.
+Use fictional people and write explicit requirements, one per line. Do not reuse
+the HTTP smoke example and call it unseen. Check your microphone with a short clip.
 
-**1:15–2:15 — Explain the scoring code**  
-Open `app/scorer.py`. Show `model.encode(...)`, cosine similarity, the configured calibration range, and the small evidence bonus. Explain that the weights are in `config.json`, not embedded in the scoring logic.
+**0:00-0:25 - Introduce the problem.**
+Say your name and explain that the tool returns criterion-level evidence and a
+weighted fit assessment to help a recruiter ask better follow-up questions.
+Mention Python, FastAPI, Pydantic and local FastEmbed embeddings.
 
-**2:15–3:00 — Explain failure handling**  
-Open `app/parsers.py`. Show that corrupt PDFs return an error and very short extracted text produces `parser_warning` rather than a fake confident score.
+**0:25-1:25 - Demonstrate unseen input.**
+Open POST /assess/files in the API docs, upload your new JD and resume, and run it.
+Show the overall score, one extracted requirement, its evidence passage and its
+reasoning. Explain that a low score means insufficient matching text, not proof
+that the candidate cannot do the job. Show a broken PDF returning a clear error
+if time allows. You can create one by saving plain text with a .pdf extension.
 
-**3:00–3:45 — Calibration**  
-Run the same JD against `resume_a.txt`, `resume_b.txt`, and `resume_c.txt`. Record the actual three overall scores in `docs/explanation.md`. Call out the A/B gap as the consistency check.
+**1:25-2:20 - Explain one code path.**
+Open app/scoring.py. Explain the criteria-by-chunk similarity matrix, maximum
+similarity, linear mapping, and weighted mean. Open config.json briefly to show
+weights are configurable. Explain why there is no matching-line-count bonus.
+If asked about the local model, app/embedding.py performs the actual model call,
+validates vectors and raises an error caught as HTTP 503.
 
-**3:45–4:15 — Honest limitations**  
-“I did not implement OCR, a large labeled benchmark, or a full LLM criterion extractor. My next step would be OCR plus a 50–100 pair labeled evaluation set and comparison of heuristic vs. LLM extraction.”
+**2:20-3:10 - Explain calibration with evidence.**
+Show results/baseline_calibration.json and results/calibration.json. Explain the
+observed saturation at 100 and why the scale changed. Quote 87.81 / 78.89 / 31.82,
+the 8.92-point gap, and the limitation of testing only three synthetic resumes.
+Do not describe the scores as accuracy percentages.
+
+**3:10-3:35 - Show a real prompt.**
+Open docs/development_prompts.md and the matching conversation. The assignment
+allows an embedding call instead of an LLM call, so this application has no
+runtime chat prompt. Show the actual development instruction used with the coding
+assistant and explain which requirements shaped the implementation. Do not invent
+a runtime prompt. If the evaluator specifically means a runtime generative prompt,
+clarify that interpretation before submission.
+
+**3:35-4:15 - Finish with honest limitations.**
+Show the one-page explanation. Mention OCR, compound requirements and larger
+held-out evaluation as next steps. State that AI assistance was used and you can
+explain the code. Stop the recording within the required 3-5 minutes.
+
+Upload the video to Google Drive. Set General access to Anyone with the link,
+Viewer. Open it in a private browser window while logged out and check that the
+video plays with audible sound. Paste its public URL into the submission form.
